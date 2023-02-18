@@ -27,8 +27,11 @@ infixl 8  //
 * to the Haskell formula in function jdnGr 
 
 ---------------------------
+
 ## Integer division using operator '//' in Elm
+
 ------------------------------------------
+
 <code>
 > import NewJulia exposing (jdnGr)
 > y = 2023
@@ -48,10 +51,14 @@ infixl 8  //
 > 
 </code>
 ------------------
+
 ## Integer division in Haskell 
-Same formula as in Elm user gives incorrect results
+
+Same formula used as in Elm gives incorrect results
 with operator '//' declared to be same as 'div'
+
 ---------------------------------------------------
+
 <code>
 GHCi, version 9.2.5: https://www.haskell.org/ghc/  :? for help
 ghci> :l Solarlib.hs
