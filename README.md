@@ -19,14 +19,14 @@ Here is explained how I have fixed the code.
 infixl 8  //
 </code>
 
-* Function for Julian day number JDN calculated from the given date
-* where y = year, m = month, d = day
-* The formula of Elm version would give wrong results if used in
-* Haskell. The reason is the difference in integer division of the
-* negative numbers. For that reason the correction factor 'u' was added
-* to the Haskell formula in function jdnGr 
+* Function jdnGr for Julian day number JDN calculated from the given date
+where y = year, m = month, d = day
+* The original formula of Elm version would give wrong results if used in
+Haskell. The reason is the difference in integer division of the
+negative numbers. For that reason the correction factor 'u' was added
+to the Haskell formula in function jdnGr 
 
----------------------------
+------------------------------------------
 
 ## Integer division using operator '//' in Elm
 
@@ -50,14 +50,17 @@ infixl 8  //
 0 : Int
 > 
 </code>
-------------------
+---------------------------------------------------
 
 ## Integer division in Haskell 
 
 Same formula used as in Elm gives incorrect results
 with operator '//' declared to be same as 'div'
 
+
 ---------------------------------------------------
+
+### These are incorrect results
 
 <code>
 GHCi, version 9.2.5: https://www.haskell.org/ghc/  :? for help
@@ -80,3 +83,11 @@ ghci> (m - 14) // 12
 ghci> 
 ----------------------
 </code>
+
+
+## Correction of the formula
+
+* January m =1,   (m - u) // 12 == -1, u = 4
+* February m = 2, (m - u) // 12 == -1, u = 4
+* March ... December m = 3 ... 12, 
+  (m - u) // 12 == 0,  u = 3
