@@ -1,3 +1,6 @@
+# Good references
+<a href="">Zwon-Haskell Reference</a>
+
 # Integer division in Haskell vs Elm
 
 I translated a little piece of code in elm language to haskell.
