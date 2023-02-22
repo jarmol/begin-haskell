@@ -1,13 +1,16 @@
 import Solarlib (jdnGr, weekday)
 
 
-
-year = 2023
-month = 2
-day = 17
-
-
+ 
 main :: IO ()
 main = do
-         putStrLn $ "Julian date number JDN = " ++ show (jdnGr year month day)
-         putStrLn $ " on 2023-02-17  " ++ show (weekday year month day)
+         print    "Year: "
+         year :: Int <- readLn
+         print  "Month: "
+         month :: Int <- readLn
+         print $ "Day: "
+         day :: Int <- readLn
+         let 
+             dateStr = (show year) ++ "-" ++ (show month) ++ "-" ++ (show day) :: String
+         putStr $ dateStr ++ " " ++  show (weekday year month day)
+         putStrLn $ "  Julian date number (JDN) = " ++ show (jdnGr year month day)
