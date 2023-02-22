@@ -1,7 +1,14 @@
-# Good references
-<a href="">Zwon-Haskell Reference</a>
+## My own stuff
+### julian
+* <a href="https://github.com/jarmol/begin-haskell/edit/main/julian.hs">source</a>
+* Calculates Julian Day numbers for the given date
 
-# Integer division in Haskell vs Elm
+
+## Good references
+* Old Haskell 98, some examples do not work: 
+<a href="http://zvon.org/other/haskell/Outputglobal/index.html">Zwon-Haskell Reference</a>
+
+## Integer division in Haskell vs Elm
 
 I translated a little piece of code in elm language to haskell.
 There rose a problem as the code contained division with negative integers.
