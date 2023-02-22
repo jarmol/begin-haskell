@@ -63,7 +63,16 @@ weekday y m d =
             "Unknown day"
 
 
--- testing
 
+-- Converts the date (year, month, day) to string
+
+dateString :: Int -> Int -> Int -> String
+dateString y m d = 
+   (show year) ++ "-"
+      ++ (show month) ++ "-"
+      ++ (show day) :: String
+
+
+-- testing
 -- main = jdnGr 2023 2 13  -- 2459989
 
