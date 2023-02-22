@@ -68,9 +68,9 @@ weekday y m d =
 
 dateString :: Int -> Int -> Int -> String
 dateString y m d = 
-   (show year) ++ "-"
-      ++ (show month) ++ "-"
-      ++ (show day) :: String
+   (show y) ++ "-"
+      ++ (show m) ++ "-"
+      ++ (show d) :: String
 
 
 -- testing
