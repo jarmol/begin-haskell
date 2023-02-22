@@ -1,4 +1,4 @@
-import Solarlib (jdnGr, weekday)
+import Solarlib (jdnGr, weekday, dateString)
 
 
  
@@ -10,7 +10,5 @@ main = do
          month :: Int <- readLn
          print $ "Day: "
          day :: Int <- readLn
-         let 
-             dateStr = (show year) ++ "-" ++ (show month) ++ "-" ++ (show day) :: String
-         putStr $ dateStr ++ " " ++  show (weekday year month day)
+         putStr $ dateString year month day ++ ", " ++  show (weekday year month day)
          putStrLn $ "  Julian date number (JDN) = " ++ show (jdnGr year month day)
