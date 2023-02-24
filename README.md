@@ -2,6 +2,16 @@
 ### julian
 * <a href="https://github.com/jarmol/begin-haskell/edit/main/julian.hs">source</a>
 * Calculates Julian Day numbers for the given date
+<code>
+  $ ./julian
+  "Year: "
+  2023
+  "Month: "
+  2
+  "Day: "
+  24
+  2023-2-24, "Friday"  Julian date number (JDN) = 2460000
+</code>
 
 ### List Examples
 
