@@ -18,8 +18,8 @@
 Short list of the most common <a href="https://github.com/jarmol/begin-haskell/tree/main/listoperations">list operations</a>
 
 ### Good references
-* Old Haskell 98, some examples do not work: 
-<a href="http://zvon.org/other/haskell/Outputglobal/index.html">Zwon-Haskell Reference</a>
+* <a href="https://wiki.haskell.org/H-99:_Ninety-Nine_Haskell_Problems">H-99: Ninety-Nine Haskell Problems</a>
+
 
 ## Integer division in Haskell vs Elm
 
