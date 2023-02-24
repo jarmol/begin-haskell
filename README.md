@@ -3,8 +3,11 @@
 * <a href="https://github.com/jarmol/begin-haskell/edit/main/julian.hs">source</a>
 * Calculates Julian Day numbers for the given date
 
+### List Examples
 
-## Good references
+Short list of the most common <a href="https://github.com/jarmol/begin-haskell/tree/main/listoperations">list operations</a>
+
+### Good references
 * Old Haskell 98, some examples do not work: 
 <a href="http://zvon.org/other/haskell/Outputglobal/index.html">Zwon-Haskell Reference</a>
 
