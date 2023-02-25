@@ -22,6 +22,22 @@ ghci> reverse [1 .. 8]
 
 [8,7,6,5,4,3,2,1]
 
+ghci> [1..6] !! 3
+
+4
+
+ghci> ['a' .. 'v']
+
+"abcdefghijklmnopqrstuv"
+
+ghci> ['a' .. 'v'] !! 3
+
+'d'
+
+ghci> 7 : [1..6]
+
+[7,1,2,3,4,5,6]
+
 ghci> foldl (+) 0 [1,4,6,7,11]
 
 29
