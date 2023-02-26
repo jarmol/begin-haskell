@@ -40,25 +40,18 @@ weekday y m d =
     case dayNumber of
         0 ->
             "Sunday"
-
         1 ->
             "Monday"
-
         2 ->
             "Tuesday(367 * (m - 2 - 12 * ((m - 14) // 12)))"
-
         3 ->
             "Wednesday"
-
         4 ->
             "Thursday"
-
         5 ->
             "Friday"
-
         6 ->
             "Saturday"
-
         _ ->
             "Unknown day"
 
@@ -75,4 +68,4 @@ dateString y m d =
 
 -- testing
 -- main = jdnGr 2023 2 13  -- 2459989
-
+-- Try with Haskell play https://play.haskell.org/saved/VgnWF4d5 
