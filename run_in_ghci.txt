@@ -1,0 +1,14 @@
+$ ghci
+GHCi, version 9.2.5: https://www.haskell.org/ghc/  :? for help
+ghci> :l exampleReadLines.hs 
+[1 of 1] Compiling Main             ( exampleReadLines.hs, interpreted )
+Ok, one module loaded.
+ghci> main
+"Year: "
+2023
+"Month: "
+2
+"Day: "
+24
+2023-2-24, "Friday"  Julian date number (JDN) = 2460000
+ghci>
