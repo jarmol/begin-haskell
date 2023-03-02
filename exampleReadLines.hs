@@ -1,6 +1,9 @@
 (//) = div
 infixl 8  //
 
+-- This code works ok in ghci, why not in Playground?
+-- See Haskell playground at https://play.haskell.org/saved/xnkcSUeb
+
 -- Function for Julian day number JDN calculated from the given date
 -- where y = year, m = month, d = day
 
