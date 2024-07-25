@@ -1,21 +1,29 @@
 module Solarlib where
 
+(//) :: Int -> Int -> Int
+(//) = posit
+infixl 8 //
+
 
 -- Declaring the operator '//' to be used instead of div
-
-(//) = div
-infixl 8  //
+-- (//) = div
+-- infixl 8  //
 
 -- Function for Julian day number JDN calculated from the given date
 -- where y = year, m = month, d = day
 
+
+posit :: Integral a => a -> a -> a
+posit h k =
+     if h >= 0 then (div h k)
+     else  negate (div (-h) k)
+
+
 jdnGr :: Int -> Int -> Int -> Int
-jdnGr y m d =
-    let u = if m < 3 then 4  else 3
-    in
-           (1461 * (y + 4800 + (m - u) // 12)) // 4
-           + (367 * (m - 2 - 12 * (m - u) // 12)) // 12
-           - (3 * ((y + 4900 + (m - u) // 12) // 100)) // 4 + d - 32075
+jdnGr y m d = (1461 * (y + 4800 + (m - 14)//12))//4
+        + (367 * (m - 2 - 12 * ((m - 14)//12)))//12
+        - ((3 * ((y + 4900 + (m - 14)//12)//100))//4)
+        + d - 32075
 
 
 julianDay :: Int -> Int -> Int -> Double -> Double -> Double
@@ -66,7 +74,7 @@ sunTrueLong y m d tz tloc =
 
 sunTrueAnom :: Int -> Int -> Int -> Double -> Double -> Double
 sunTrueAnom y m d tz tloc =
-    geomMeanAnom y m d tz tloc + sunEqOfCtr y m d tz tloc
+    nonIntRem (geomMeanAnom y m d tz tloc + sunEqOfCtr y m d tz tloc) 360
 
 
 sunAppLong :: Int -> Int -> Int -> Double -> Double -> Double
@@ -128,10 +136,53 @@ solarNoonLST y m d tz tloc =
 
 -- | Sunrise given in local solar time.
 
+sunriseLST :: Int -> Int -> Int -> Double -> Double -> Double
 sunriseLST y m d tz tloc = solarNoonLST y m d tz tloc - haSunrise y m d tz tloc * 4
 
 -- | Sunset given in local solar time.
+sunsetLST :: Int -> Int -> Int -> Double -> Double -> Double
 sunsetLST y m d tz tloc = solarNoonLST y m d tz tloc  + haSunrise y m d tz tloc * 4
+
+-- | Duration of sunlight on a given date and location.
+sunlightDuration :: Int -> Int -> Int -> Double -> Double -> Double
+sunlightDuration y m d tz tloc = 8 * haSunrise y m d tz tloc
+
+trueSolarTime :: Int -> Int -> Int -> Double -> Double -> Double
+trueSolarTime y m d tz tloc =
+   nonIntRem (60 * tloc + eqTime y m d tz tloc + 4 * longitude - 60*tz) 1440
+
+
+hourAngle :: Int -> Int -> Int -> Double -> Double -> Double
+hourAngle y m d tz tloc
+    | tst < 0 = tst + 180
+    | otherwise = tst - 180
+  where
+    tst = trueSolarTime y m d tz tloc / 4
+
+
+solarZenithAngle :: Int -> Int -> Int -> Double -> Double -> Double
+solarZenithAngle y m d tz tloc =
+    let sins = sin (rad  latitude ) * sin (rad  (sunDeclin y m d tz tloc))
+        coss =
+            cos (rad  latitude ) * cos (rad  (sunDeclin y m d tz tloc)) *
+            cos (rad (hourAngle y m d tz tloc))
+     in deg . acos $ sins + coss
+
+
+solarElevationAngle :: Int -> Int -> Int -> Double -> Double -> Double
+solarElevationAngle y m d tz tloc = 90 - solarZenithAngle y m d tz tloc
+
+atmosRefract h
+  | h < -0.575 = belowZero h
+  | h <= 5.0 = belowFive h
+  | otherwise = 0
+  where
+      belowZero h = (- 20.774) / tan (rad h) / 3600
+      belowFive h
+        = (1735 - 518.2 * h + 103.4 * h ^ 2 - 12.79 * h ^ 3 + 0.711 * h ^ 4) / 3600
+
+-- About atmosperic refraction:
+-- https://gml.noaa.gov/grad/solcalc/calcdetails.html
 
 showtime :: RealFrac p => p -> [Char]
 showtime xmn =

@@ -11,7 +11,14 @@ import Solarlib (jdnGr
    , sunEqOfCtr
    , sunAppLong
    , meanObliqEcliptic
-   , obliqCorr, sunDeclin, eqTime, haSunrise, solarNoonLST, showtime, sunriseLST, sunsetLST )
+   , obliqCorr, sunDeclin, eqTime, haSunrise
+   , solarNoonLST, showtime, sunriseLST, sunsetLST
+   , sunlightDuration
+   , trueSolarTime
+   ,hourAngle
+   , solarZenithAngle
+   , latitude
+   , solarElevationAngle, atmosRefract )
 
 import Numeric ( showFFloat )
 import Text.Printf ( printf )
@@ -36,12 +43,13 @@ putsRow y m d tz tloc =
         gL = sunTrueLong y m d tz tloc
     --  gA = sunTrueAnom y m d tz tloc
         sunEC  = sunEqOfCtr y m d tz tloc
-        eqT = eqTime y m d tz tloc
+    --  eqT = eqTime y m d tz tloc
         srHA = haSunrise y m d tz tloc
         noonT = solarNoonLST y m d tz tloc
         sunriseT = sunriseLST y m d tz tloc
         sunDec = sunDeclin y m d tz tloc
         sunsetT = sunsetLST y m d tz tloc
+        dayL    = sunlightDuration y m d tz tloc
     putStr (dateString y m d)
     printf "%6.2f" (tloc - tz)
     printf "%7.2f " tloc
@@ -49,20 +57,23 @@ putsRow y m d tz tloc =
     printf "%8.6f " jC
  -- printf "%10.4f" gL
     printf "%10.5f" sunDec
-    printf "%11.7f" eqT
+ -- printf "%11.7f" eqT
     printf "%9.3f" srHA
     printf "%10s" (showtime sunriseT)
     printf "%10s" (showtime noonT)
-    printf "%10s\n" (showtime sunsetT)
+    printf "%10s" (showtime sunsetT)
+    printf "%10s" (showtime dayL)
+    printf "%9.3f\n" (atmosRefract $ solarElevationAngle y m d tz tloc)
 
 
 
 main :: IO ()
 main = do
+    printf "%s:%6.2f\n" "Latitude " latitude
     putStr "\nDate      UTC   Local  Julian      Julian.    "
-    putStrLn "Sun       Time-               Sunrise   Noontime  Sunset"
+    putStrLn "Sun                Sunrise   Noon      Sunset    Sunlight   Atmospheric"
     putStr "          time  time   day         century    "
-    putStrLn "declinat  equation    HA °    time      time      time"
+    putStrLn "declinat  HA °     time      time      time      duration   refraction"
     putsRow 2024 7 2 2.0 24.0
     putsRow 2024 7 3 2.0 2.0
     putsRow 2024 7 3 2.0 8.0
