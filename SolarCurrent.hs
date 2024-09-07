@@ -21,11 +21,15 @@ module SolarCurrent
    , atmosRefract
    , showtime
    , solAzimuth
+   , sunlightDuration
+   , nonIntRem
+   , fromUTC
+   , showLocalTime
    )
    where
 
-import Data.Time ( toGregorian, UTCTime(utctDay) )
-import Data.Time.Clock.POSIX (posixSecondsToUTCTime, utcTimeToPOSIXSeconds)
+import Data.Time ( toGregorian, UTCTime(utctDay), hoursToTimeZone )
+import Data.Time.Clock.POSIX (posixSecondsToUTCTime, utcTimeToPOSIXSeconds, POSIXTime)
 import Text.XHtml (center)
 
 julianCentury :: UTCTime -> Double
@@ -34,10 +38,11 @@ julianCentury tcurrent =
         posixSeconds = utcTimeToPOSIXSeconds tcurrent
         sinceEpochBegin = posixSeconds/3600/24
         numberJD = 2440587.5 + sinceEpochBegin
-        julianCentury = (numberJD - 2451545) / 36525
-        sJC = show julianCentury
-        len = length sJC
-    in  read $ take (len - 1) sJC :: Double
+        juliCent = (numberJD - 2451545) / 36525
+    --    sJC = show juliCent
+    in   fromUTC juliCent
+     --   len = length sJC
+    -- in  read $ take (len - 1) sJC :: Double
 
 -- Geom. average sun longitude
 geomMeanLong :: RealFrac a => a -> a
@@ -213,6 +218,15 @@ solAzimuth hrA lat solZen sunDecl=
         acos ((sin b3 * cos ad - sin t) / (cos b3 * sin ad))
 
 
+showLocalTime :: (RealFrac p1, RealFrac p2, RealFrac p3) => p3 -> p2 -> p1 -> [Char]
+showLocalTime hr mn sc =
+    let h2 = truncate hr
+        mn2 = truncate mn
+        sc2 = round sc
+        show2 x = 
+           if x < 10 then "0" ++ show x
+           else show x
+    in show2 h2 ++ ":" ++ show2 mn2 ++ ":" ++ show2 sc2
 
 
 showtime :: RealFrac p => p -> [Char]
@@ -228,8 +242,6 @@ showtime xmn =
     in   show2 h ++ ":" ++ show2 mins ++ ":" ++ show2 secs
 
 
-
-
 isLeapYear y
   | mod y 400 == 0 = True
   | mod y 100 == 0 = False
@@ -237,6 +249,22 @@ isLeapYear y
   | otherwise = False
 
 
+fromPOSIX t =
+    read $ show t :: Double
+
+
+toPOSIX t =
+    let ts = show t
+    in  read ts :: POSIXTime
+
+fromUTC ut =
+    let uts = show ut 
+        ls = length uts - 1
+        utc = take ls uts
+    in  read utc :: Double
+
+toDouble pt =
+    read $ show pt :: Double
 
 -- modulo for real numbers
 
@@ -255,5 +283,9 @@ dateString y m d =
          if x < 10 then "0" ++ show x
          else show x
 
+getSeconds :: Integral b => UTCTime -> b
+getSeconds ct =
+    let posixSeconds = utcTimeToPOSIXSeconds ct
+    in  round posixSeconds
 
 -- Try with Haskell play https://play.haskell.org/saved/VgnWF4d5 
