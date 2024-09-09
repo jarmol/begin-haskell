@@ -60,7 +60,7 @@ main = do
      ++ "  Longitude: " ++ show longitude
       ++ " Timezone: " ++ show (truncate timeZone)
     putStrLn $ "  Date and Current Time " ++ show currentTime
-    putStrLn $ "  Local time  " ++ showLocalTime lochour minutes seconds (truncate timeZone)
+    putStrLn $ "  Local time  " ++ showLocalTime lochour minutes seconds 
        ++ " ( UTC + " ++ show (truncate timeZone) ++ " h )"
     putStrLn $ "  Julian Century " ++ showFFloat (Just 8) jC ""
     putStrLn (yellow ++ blackbg ++  "\n  CURRENT SOLAR POSITION")
