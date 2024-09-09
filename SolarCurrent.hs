@@ -23,7 +23,6 @@ module SolarCurrent
    , solAzimuth
    , sunlightDuration
    , nonIntRem
-   , fromUTC
    , showLocalTime
    )
    where
@@ -39,10 +38,10 @@ julianCentury tcurrent =
         sinceEpochBegin = posixSeconds/3600/24
         numberJD = 2440587.5 + sinceEpochBegin
         juliCent = (numberJD - 2451545) / 36525
-    --    sJC = show juliCent
-    in   fromUTC juliCent
-     --   len = length sJC
-    -- in  read $ take (len - 1) sJC :: Double
+        sJC = show juliCent
+    --in   fromUTC juliCent
+        len = length sJC
+    in  read $ take (len - 1) sJC :: Double
 
 -- Geom. average sun longitude
 geomMeanLong :: RealFrac a => a -> a
@@ -218,9 +217,10 @@ solAzimuth hrA lat solZen sunDecl=
         acos ((sin b3 * cos ad - sin t) / (cos b3 * sin ad))
 
 
-showLocalTime :: (RealFrac p1, RealFrac p2, RealFrac p3) => p3 -> p2 -> p1 -> [Char]
-showLocalTime hr mn sc =
-    let h2 = truncate hr
+showLocalTime hr mn sc tz =
+    let h1 = truncate hr
+        h2 = if h1 > 24 then h1 -  tz
+        else h1
         mn2 = truncate mn
         sc2 = round sc
         show2 x = 
@@ -248,7 +248,7 @@ isLeapYear y
   | mod y 4 == 0 = True
   | otherwise = False
 
-
+{-
 fromPOSIX t =
     read $ show t :: Double
 
@@ -265,6 +265,8 @@ fromUTC ut =
 
 toDouble pt =
     read $ show pt :: Double
+
+-}    
 
 -- modulo for real numbers
 
