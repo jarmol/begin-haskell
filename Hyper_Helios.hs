@@ -56,12 +56,13 @@ main = do
         (blue, green, red, yellow, white, black, bluebg, whitebg,blackbg) = ("\ESC[94m","\ESC[92m","\ESC[91m","\ESC[93m","\ESC[97m","\ESC[30m","\ESC[44m","\ESC[107m","\ESC[40m" )
     putStrLn (white ++ bluebg)
     putStrLn "  OBSERVATION LOCATION  "
-    putStrLn ("  Latitude: " ++ show latitude
+    putStrLn $ "  Latitude: " ++ show latitude
      ++ "  Longitude: " ++ show longitude
-      ++ " Timezone: " ++ show (truncate timeZone))
+      ++ " Timezone: " ++ show (truncate timeZone)
     putStrLn $ "  Date and Current Time " ++ show currentTime
-    putStrLn $ "  Local time  " ++ showLocalTime lochour minutes seconds
+    putStrLn $ "  Local time  " ++ showLocalTime lochour minutes seconds (truncate timeZone)
        ++ " ( UTC + " ++ show (truncate timeZone) ++ " h )"
+    putStrLn $ "  Julian Century " ++ showFFloat (Just 8) jC ""
     putStrLn (yellow ++ blackbg ++  "\n  CURRENT SOLAR POSITION")
     putStrLn $ "  Sun Declination "       ++ showFFloat (Just 4) sunDecl "°"
     putStrLn $ "  Sunrise    " ++ showtime sunRise
