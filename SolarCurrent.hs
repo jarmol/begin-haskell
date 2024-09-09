@@ -217,9 +217,9 @@ solAzimuth hrA lat solZen sunDecl=
         acos ((sin b3 * cos ad - sin t) / (cos b3 * sin ad))
 
 
-showLocalTime hr mn sc tz =
+showLocalTime hr mn sc =
     let h1 = truncate hr
-        h2 = if h1 > 24 then h1 -  tz
+        h2 = if h1 > 24 then h1 -  24
         else h1
         mn2 = truncate mn
         sc2 = round sc
