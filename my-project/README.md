@@ -1,2 +1,3 @@
 # Example of building a project in Haskell
-## Using Haskell tool stack for build and package
+## Using Haskell tool cabal for building a simple package.
+### See bmi-calculator
