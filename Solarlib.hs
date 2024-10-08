@@ -1,24 +1,27 @@
 module Solarlib where
 
+-- | This version calculates solar position and events for current date and fixed times of day
+-- and fixed location.
+-- Sunrise, noon and Sunset is calculated using all around the year the normal time, i.e. without DLST (summer time).
+
+
+-- | Declaring the operator '//' to be used instead of div
+-- (//) = div
+-- infixl 8  //
+
 (//) :: Int -> Int -> Int
 (//) = posit
 infixl 8 //
 
-
--- Declaring the operator '//' to be used instead of div
--- (//) = div
--- infixl 8  //
-
--- Function for Julian day number JDN calculated from the given date
+-- | Function for Julian day number JDN calculated from the given date
 -- where y = year, m = month, d = day
-
 
 posit :: Integral a => a -> a -> a
 posit h k =
      if h >= 0 then (div h k)
      else  negate (div (-h) k)
 
-
+-- | Used in calculation of Julian date
 jdnGr :: Int -> Int -> Int -> Int
 jdnGr y m d = (1461 * (y + 4800 + (m - 14)//12))//4
         + (367 * (m - 2 - 12 * ((m - 14)//12)))//12
@@ -35,7 +38,7 @@ julianCentury :: Int -> Int -> Int -> Double -> Double -> Double
 julianCentury y m d tz tloc =
     ( julianDay y m d tz tloc - 2451545 ) / 36525
 
--- Geom. average sun longitude
+-- | Geom. average sun longitude
 geomMeanLong :: Int -> Int -> Int -> Double -> Double -> Double
 geomMeanLong y m d tz tloc =
     let jC = julianCentury y m d tz tloc
@@ -69,8 +72,6 @@ deg r = 180.0 * r / pi
 sunTrueLong :: Int -> Int -> Int -> Double -> Double -> Double
 sunTrueLong y m d tz tloc =
     geomMeanLong y m d tz tloc + sunEqOfCtr y m d tz tloc
--- Function to define whether the given year is leap year
-
 
 sunTrueAnom :: Int -> Int -> Int -> Double -> Double -> Double
 sunTrueAnom y m d tz tloc =
@@ -98,18 +99,18 @@ obliqCorr y m d tz tloc =
     meanObliqEcliptic y m d tz tloc
      + 0.00256 * cos (rad (125.04 - 1934.136 * julianCentury y m d tz tloc))
 
--- | deg
+-- | Solar declination angle (deg)
 
 sunDeclin y m d tz tloc =
     deg . asin $
     sin (rad $ obliqCorr y m d tz tloc) * sin (rad $ sunAppLong y m d tz tloc)
 
 
--- Y-variable
+-- | Y-variable
 yVar y m d tz tloc = tan (rad (obliqCorr y m d tz tloc / 2)) * tan (rad (obliqCorr y m d tz tloc/2))
 
 
--- Equation of time
+-- | Equation of time
 eqTime y m d tz tloc =
      4 * deg (yVar y m d tz tloc * sin (2 * rad (geomMeanLong y m d tz tloc))
    - 2 * eccOrbit y m d tz tloc * sin (rad (geomMeanAnom y m d tz tloc))
@@ -134,12 +135,12 @@ solarNoonLST :: Int -> Int -> Int -> Double -> Double -> Double
 solarNoonLST y m d tz tloc =
     720 - 4 * longitude - eqTime y m d tz tloc + tz * 60
 
--- | Sunrise given in local solar time.
+-- | Sunrise in local time.
 
 sunriseLST :: Int -> Int -> Int -> Double -> Double -> Double
 sunriseLST y m d tz tloc = solarNoonLST y m d tz tloc - haSunrise y m d tz tloc * 4
 
--- | Sunset given in local solar time.
+-- | Sunset in local time.
 sunsetLST :: Int -> Int -> Int -> Double -> Double -> Double
 sunsetLST y m d tz tloc = solarNoonLST y m d tz tloc  + haSunrise y m d tz tloc * 4
 
@@ -181,8 +182,8 @@ atmosRefract h
       belowFive h
         = (1735 - 518.2 * h + 103.4 * h ^ 2 - 12.79 * h ^ 3 + 0.711 * h ^ 4) / 3600
 
--- About atmosperic refraction:
--- https://gml.noaa.gov/grad/solcalc/calcdetails.html
+-- | About atmosperic refraction:
+--   see https://gml.noaa.gov/grad/solcalc/calcdetails.html
 
 showtime :: RealFrac p => p -> [Char]
 showtime xmn =
@@ -198,7 +199,7 @@ showtime xmn =
 
 
 
-
+-- | Definition of the leapyear
 isLeapYear y
   | mod y 400 == 0 = True
   | mod y 100 == 0 = False
@@ -206,7 +207,7 @@ isLeapYear y
   | otherwise = False
 
 
--- Function defines the week day from JDN
+-- | Function defines the weekday from JDN
 
 weekday :: Int -> Int -> Int -> String
 weekday y m d =
@@ -220,7 +221,7 @@ weekday y m d =
         1 ->
             "Monday"
         2 ->
-            "Tuesday(367 * (m - 2 - 12 * ((m - 14) // 12)))"
+            "Tuesday(367"
         3 ->
             "Wednesday"
         4 ->
@@ -233,12 +234,12 @@ weekday y m d =
             "Unknown day"
 
 
--- modulo for real numbers
+-- | modulo function for real numbers
 
 nonIntRem :: RealFrac a => a -> a -> a
 nonIntRem x y = x - (y * fromIntegral (truncate (x/y)))
 
--- Converts the date (year, month, day) to string
+-- | Converts the date (year, month, day) to string
 
 dateString :: Int -> Int -> Int -> String
 dateString y m d =
@@ -247,6 +248,6 @@ dateString y m d =
       ++ show d :: String
 
 
--- testing
+-- | testing
 -- main = jdnGr 2023 2 13  -- 2459989
 -- Try with Haskell play https://play.haskell.org/saved/VgnWF4d5 
