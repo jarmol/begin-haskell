@@ -1,4 +1,15 @@
-module MainV01  (main) where
+{-|
+Module      : MainV1
+Description : Solar calculation results for several times of day in table form
+Copyright   : © Polarit, 2024
+Stability   : experimental
+
+
+This version calculates solar position and events for current date and fixed times of day and fixed location.
+
+Sunrise, noon and Sunset is calculated using all around the year the normal time, i.e. without DLST (summer time).
+-}
+module MainV1  (main) where
 
 import SolarlibV1 (
     dateString
@@ -22,10 +33,6 @@ import Text.Printf ( printf )
 import Data.Time (toGregorian, getCurrentTime, UTCTime(utctDay))
 import Data.Maybe (fromJust)
 import Data.Char (GeneralCategory(DecimalNumber))
-
--- | This version calculates solar position and events for current date and fixed times of day
--- and fixed location.
--- Sunrise, noon and Sunset is calculated using all around the year the normal time, i.e. without DLST (summer time).
 
 putsRow :: Int -> Int -> Int -> Double -> Double -> IO ()
 putsRow y m d tz tloc =
@@ -63,6 +70,11 @@ putsRow y m d tz tloc =
 
 (yellow, bluebg) = ("\ESC[93m", "\ESC[44m")
 
+
+{-  This version calculates solar position and events for current date and fixed times of day
+-- and fixed location.
+-- Sunrise, noon and Sunset is calculated using all around the year the normal time, i.e. without DLST (summer time).
+-}
 main :: IO ()
 main = do
     putStrLn (yellow ++ bluebg)

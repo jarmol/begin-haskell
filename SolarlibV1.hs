@@ -1,8 +1,29 @@
-module SolarlibV1 where
--- | This version calculates solar position and events for current date and fixed times of day
--- and fixed location.
--- Sunrise, noon and Sunset is calculated using all around the year the normal time, i.e. without DLST (summer time).
+{-|
+Module      : SolarlibV1
+Description : Solar calculation results for several times of day in table form
+Copyright   : © Polarit, 2024
+Stability   : experimental
 
+This version calculates solar position and events for current date and fixed times of day and fixed location.
+Sunrise, noon and Sunset is calculated using all around the year the normal time, i.e. without DLST (summer time).
+-}
+module SolarlibV1 (dateString
+   , julianDay
+   , julianCentury
+   , sunDeclin 
+   , solarNoonLST
+   , showtime
+   , sunriseLST
+   , sunsetLST
+   , sunlightDuration
+   , latitude
+   , solarElevationAngle
+   , atmosRefract
+   , refractCorrectElevation
+   , solAzimuth
+   , longitude 
+)
+where
 
 -- | Declaring the operator '//' to be used instead of div
 -- (//) = div
@@ -11,8 +32,6 @@ module SolarlibV1 where
 (//) :: Int -> Int -> Int
 (//) = posit
 infixl 8 //
-
-
 
 
 posit :: Integral a => a -> a -> a
@@ -187,14 +206,11 @@ atmosRefract y m d tz tloc =
       else if h <= 5.0 then belowFive h
       else if h <= 85.0 then belowEightyFive h
       else  0
-
+-- ^About atmosperic refraction: see https://gml.noaa.gov/grad/solcalc/calcdetails.html
 
 
 refractCorrectElevation y m d tz tloc =
     solarElevationAngle y m d tz tloc + atmosRefract y m d tz tloc
-
--- | About atmosperic refraction:
---   see https://gml.noaa.gov/grad/solcalc/calcdetails.html
 
 solAzimuth y m d tz tloc =
     let
