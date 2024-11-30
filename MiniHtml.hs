@@ -13,54 +13,48 @@ module MiniHtml
   , u_
   , ul_
   , ol_
+  , style_
+  , table_
+  , tr_
+  , td_
   , linkstyle
   , makeHtml) where
 
 el :: String -> String -> String
 el tag content =
-  "\n<" <> tag <> ">\n" <> content <> "\n</" <> tag <> ">"
+  "\n<" <> tag <> ">" <> content <> "</" <> tag <> ">"
 
-b_ :: String -> String
-b_ = el "b"
-
-body_ :: String -> String
+body_, html_, head_, title_, h1_, h2_, table_, td_ :: String -> String
 body_ = el "body"
-
-html_ :: String -> String
 html_ = el "html"
-
-head_ :: String -> String
 head_ = el "head"
-
-i_ :: String -> String
-i_ = el "i"
-
-title_ :: String -> String
 title_ = el "title"
-
-h1_ :: String -> String
 h1_ = el "h1"
-
-h2_ :: String -> String
 h2_ = el "h2"
+table_ = el "table"
+tr_ = el "tr"
+td_ = el "td"
+
+-- italic, bold, underscore
+i_, b_, u_ :: String -> String
+i_ = el "i"
+b_ = el "p"
+u_ = el "u"
 
 p_ :: String -> String
 p_ = el "p"
 
-a_ :: String -> String -> String
-a_  alink declared = "<a href=\"" <> alink <> "\">" <> declared <> "</a>"
-
 li_ :: String -> String
 li_ = el "li"
 
-u_ :: String -> String
-u_ = el "u"
-
-ul_ :: Foldable t => t String -> String
+ul_, ol_ :: Foldable t => t String -> String
 ul_ lst = el "ul" $ concatMap li_ lst
 
-ol_ :: Foldable t => t String -> String
 ol_ lst = el "ol" $ concatMap li_ lst
+
+a_ :: String -> String -> String
+a_  alink declared = "<a href=\"" <> alink <> "\">" <> declared <> "</a>"
+style_ = el "style"
 
 linkstyle :: String
 linkstyle = "<link rel=\"stylesheet\" href=\"mystyle.css\">"
