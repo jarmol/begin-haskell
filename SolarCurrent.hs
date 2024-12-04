@@ -29,7 +29,7 @@ module SolarCurrent
 
 import Data.Time ( toGregorian, UTCTime(utctDay), hoursToTimeZone )
 import Data.Time.Clock.POSIX (posixSecondsToUTCTime, utcTimeToPOSIXSeconds, POSIXTime)
-import Text.XHtml (center)
+--import Text.XHtml (center)
 
 julianCentury :: UTCTime -> Double
 julianCentury tcurrent =
@@ -44,12 +44,10 @@ julianCentury tcurrent =
     in  read $ take (len - 1) sJC :: Double
 
 -- Geom. average sun longitude
-geomMeanLong :: RealFrac a => a -> a
+geomMeanLong, geomMeanAnom :: RealFrac a => a -> a
 geomMeanLong cent =
      nonIntRem (280.46646 + (cent * (36000.76983 + cent * 0.0003032))) 360
 
-
-geomMeanAnom :: RealFrac a => a -> a
 geomMeanAnom cent =
      nonIntRem (357.52911 + cent * (35999.05029 - 0.0001537 * cent)) 360
 
@@ -66,22 +64,20 @@ sunEqOfCtr cent =
       + sin ( rad  2 * gA ) * ( 0.019993 - 0.000101 * cent )
       + sin ( rad  3 * gA ) * 0.000289
 
-rad :: Floating a => a -> a
-rad g = pi*g/180.0
 
-deg :: Floating a => a -> a
 deg r = 180.0 * r / pi
 
-sunTrueLong :: (RealFrac a, Floating a) => a -> a
+sunTrueLong, sunAppLong :: (RealFrac a, Floating a) => a -> a
 sunTrueLong cent =
     geomMeanLong  cent + sunEqOfCtr cent
 
-
-sunAppLong :: (RealFrac a, Floating a) => a -> a
 sunAppLong cent =
     sunTrueLong cent - 0.00569 -
     0.00478 * sin ( rad (125.04 - 1934.136 * cent))
 
+
+rad, deg :: Floating a => a -> a
+rad g = pi*g/180.0
 
 -- | deg
 
@@ -120,10 +116,15 @@ eqTime  cent =
    - 1.25 * eccOrbit cent * eccOrbit cent * sin (2 * rad (geomMeanAnom cent)))
 
 
-haSunrise :: (Floating a, RealFrac a) => a -> a -> a
+haSunrise, sunlightDuration :: (Floating a, RealFrac a) => a -> a -> a
 haSunrise cent lat =
      deg (acos (cos (rad 90.833)/(cos (rad lat) * cos (rad (sunDeclin cent)))
    - tan (rad lat) * tan (rad (sunDeclin cent))))
+
+
+-- | Sunrise given in local solar time.
+sunriseLST, sunsetLST :: (Floating a, RealFrac a) => a -> a -> a -> a -> a
+sunriseLST cent tz lat long = solarNoonLST cent tz long - (4 * haSunrise cent lat)
 
 -- | Solar Noon given in local solar time.
 -- minutes since midnight local time 00:00 
@@ -131,32 +132,24 @@ solarNoonLST :: (Floating a, RealFrac a) => a -> a -> a -> a
 solarNoonLST cent tz long =
     720 - 4 * long - eqTime cent + tz * 60
 
--- | Sunrise given in local solar time.
-
-sunriseLST :: (Floating a, RealFrac a) => a -> a -> a -> a -> a
-sunriseLST cent tz lat long = solarNoonLST cent tz long - (4 * haSunrise cent lat)
-
 -- | Sunset given in local solar time.
-sunsetLST :: (Floating a, RealFrac a) => a -> a -> a -> a -> a
 sunsetLST cent tz lat long = solarNoonLST cent tz long  + haSunrise cent lat * 4
 
--- | Duration of sunlight on a given date and location.
-sunlightDuration :: (Floating a, RealFrac a) => a -> a -> a
 sunlightDuration cent lat = 8 * haSunrise cent lat
 
-trueSolarTime :: Double -> Double -> Double -> Double -> Double
+trueSolarTime, hourAngle :: Double -> Double -> Double -> Double -> Double
 trueSolarTime tcurrent tz cent longit =
    nonIntRem ( tcurrent + eqTime cent + 4 * longit - 60*tz) 1440
 
 
-hourAngle :: Double -> Double -> Double -> Double -> Double
 hourAngle tcurrent tz cent longit
     | tst < 0 = tst + 180
     | otherwise = tst - 180
   where
     tst = trueSolarTime tcurrent tz cent longit / 4
 
-solarZenithAngle :: Double -> Double -> Double -> Double -> Double -> Double
+solarZenithAngle, solarElevationAngle, atmosRefract, refractCorrectElevation
+ :: Double -> Double -> Double -> Double -> Double -> Double
 solarZenithAngle tcurrent tz cent lat longit =
     let sins = sin (rad  lat ) * sin (rad  (sunDeclin cent))
         coss =
@@ -164,10 +157,11 @@ solarZenithAngle tcurrent tz cent lat longit =
             cos (rad (hourAngle tcurrent tz cent longit))
      in deg . acos $ sins + coss
 
-solarElevationAngle :: Double -> Double -> Double -> Double -> Double -> Double
-solarElevationAngle tcurrent tz cent lat longit = 90 - solarZenithAngle tcurrent tz cent lat longit
 
-atmosRefract :: Double -> Double -> Double -> Double -> Double -> Double
+solarElevationAngle tcurrent tz cent lat longit =
+     90 - solarZenithAngle tcurrent tz cent lat longit
+
+
 atmosRefract tcurrent tz cent lat longit =
     let h = solarElevationAngle tcurrent tz cent lat longit
         belowZero h = (- 20.774) / tan (rad h) / 3600
@@ -182,7 +176,6 @@ atmosRefract tcurrent tz cent lat longit =
       else  0
 
 
-refractCorrectElevation :: Double -> Double -> Double -> Double -> Double -> Double
 refractCorrectElevation tcurrent tz cent lat longit =
     solarElevationAngle tcurrent tz cent lat longit + atmosRefract tcurrent tz cent lat longit
 
