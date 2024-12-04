@@ -68,7 +68,7 @@ main = do
     putStrLn $ "  Sunrise    " ++ showtime sunRise
     putStrLn $ "  Solar Noon " ++ showtime solNoon
     putStrLn $ "  Sunset     " ++ showtime sunSet
-    putStrLn $ "  Sunlight duration " ++ showFFloat (Just 3) (sunLD / 60) " hour"
+    putStrLn $ "  Sunlight duration " ++ showtime sunLD
     putStrLn $ "  Solar Zenith angle " ++ showFFloat (Just 4) solZen  "°"
     putStrLn $ "  Solar elevation angle " ++ showFFloat (Just 4) solElevat  "°"
     putStrLn $ "  Atmospheric refraction " ++ showFFloat (Just 4) refract  "°"
