@@ -11,6 +11,8 @@ if let stringArray = array {
     if stringArray.count != 4 {
         print(
             """
+            This can be run on line at 
+            https://www.mycompiler.io/view/9T2OZ6mG4aL
             Enter city name and three numeric values!
             Your location name, what ever,
             Latitude angle min -90 S max 90 N.
